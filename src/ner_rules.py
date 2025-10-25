@@ -4,8 +4,8 @@ from typing import List, Dict
 HONORIFICS = r"(?:Mr|Mrs|Ms|Dr|Shri|Smt|Sri|Prof|M/s)\.?"
 ORG_SUFFIX = r"(?:Ltd|Limited|Pvt\.?\s*Ltd\.?|LLP|Inc\.?|Co\.?|Company|Corporation|Enterprises|Technologies)\b"
 
-NAME_PATTERN = re.compile(rf"\b({HONORIFICS}\s+[A-Z][a-zA-Z\-']+(?:\s+[A-Z][a-zA-Z\-']+)*)\b")
-ORG_PATTERN = re.compile(rf"\b([A-Z][\w&,.()\- ]+\s+{ORG_SUFFIX})", re.IGNORECASE)
+NAME_PATTERN = re.compile(rf"\b({HONORIFICS}[ \t]+[A-Z][a-zA-Z\-']+(?:[ \t]+[A-Z][a-zA-Z\-']+)*)\b")
+ORG_PATTERN = re.compile(rf"\b([A-Z][\w&,.()\-\ ]+[ \t]+{ORG_SUFFIX})", re.IGNORECASE)
 
 
 def extract_names_orgs(pages: List[Dict]) -> List[Dict]:
