@@ -1,0 +1,71 @@
+import argparse
+from pathlib import Path
+from src.pdf_loader import extract_pdf_text
+from src.text_clean import normalize_pages
+from src.detect_pan import detect_pans
+from src.ner_rules import extract_names_orgs
+from src.link_relations import link_pan_to_person
+from src.dedupe import build_entity_index, dedupe_entities
+from src.export_csv import export_results
+from src.report import write_report
+
+
+def parse_args():
+    p = argparse.ArgumentParser(description="Extract entities and PAN_Of relations from PDF")
+    p.add_argument("--pdf", required=True, help="Input PDF file path")
+    p.add_argument("--out", required=True, help="Combined CSV output path")
+    p.add_argument("--entities", default=None, help="Entities CSV output path")
+    p.add_argument("--relations", default=None, help="Relations CSV output path")
+    p.add_argument("--report", default=None, help="HTML report output path")
+    return p.parse_args()
+
+
+def main():
+    args = parse_args()
+    pdf_path = Path(args.pdf)
+    if not pdf_path.exists():
+        raise FileNotFoundError(f"PDF not found: {pdf_path}")
+
+    pages = extract_pdf_text(str(pdf_path))
+    pages = normalize_pages(pages)
+
+    pan_hits = detect_pans(pages)
+    rule_entities = extract_names_orgs(pages)
+
+    # Build entity index and dedupe
+    entities = rule_entities + [
+        {
+            "id": None,
+            "type": "PAN",
+            "text": h["text"],
+            "normalized_text": h["text"],
+            "page": h["page"],
+            "start": h["start"],
+            "end": h["end"],
+            "confidence": h["confidence"],
+        }
+        for h in pan_hits
+    ]
+
+    entities = dedupe_entities(entities)
+    ent_index = build_entity_index(entities)
+
+    relations = link_pan_to_person(pages, entities, ent_index)
+
+    export_results(entities, relations, args.out, args.entities, args.relations)
+
+    if args.report:
+        write_report(entities, relations, args.report)
+
+    print(f"Wrote: {args.out}")
+    if args.entities:
+        print(f"Wrote: {args.entities}")
+    if args.relations:
+        print(f"Wrote: {args.relations}")
+    if args.report:
+        print(f"Wrote: {args.report}")
+
+
+if __name__ == "__main__":
+    main()
+

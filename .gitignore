@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+outputs/
+reports/
+*.log
+*.tmp
+*.cache
+*.egg-info/
+.DS_Store

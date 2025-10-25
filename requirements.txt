@@ -1,0 +1,7 @@
+pdfminer.six==20240706
+spacy==3.7.5
+pydantic==2.9.2
+rapidfuzz==3.9.7
+pandas==2.2.3
+python-dateutil==2.9.0.post0
+requests==2.32.3

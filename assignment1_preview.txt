@@ -1,0 +1,28 @@
+You can work on any one of the following two assignments
+
+Assignment 1
+
+Use Python to work on the following assignment:
+
+The requirement is to extract entities and relations from the attached PDF document.
+
+Entities to be extracted: (Organisation, Name, PAN)
+
+Relations: - PAN_Of
+
+E.g.:
+
+ Entity (PAN)                      Relation                        Entity (Person)
+ AAUFM6247N                        PAN_Of                          Mr. Agarwal
+
+
+
+
+Instructions
+
+    1. Use open-source LLM e.g. Mistral 7B or any similar model
+    2. The objective is to maximise the output without compromising on quality (Maximum Correct
+       Entities and Relations with the Least number of incorrect extraction)
+    3. Store the result in a CSV file
+
+Share your result in a CSV file along with the Python code.
